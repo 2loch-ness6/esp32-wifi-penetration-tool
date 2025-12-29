@@ -14,6 +14,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -44,11 +46,7 @@ jobs:
         idf.py build
     
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: esp32-wifi-penetration-tool-binaries
-        path: |
-          build/esp32-wifi-penetration-tool.bin
-          build/bootloader/bootloader.bin
-          build/partition_table/partition-table.bin
-        retention-days: 30
+        name: build-artifact
+        path: ./build/output
