@@ -1,3 +1,4 @@
+
 name: Build ESP32 Wi-Fi Penetration Tool
 
 on:
@@ -12,49 +13,45 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.8'
-    
-    - name: Clone ESP-IDF v4.1
-      run: |
-        git clone -b v4.1 --recursive https://github.com/espressif/esp-idf.git
-        cd esp-idf
-        git checkout 5ef1b390026270503634ac3ec9f1ec2e364e23b2
-        git submodule update --init --recursive
-    
-    - name: Install ESP-IDF
-      run: |
-        cd esp-idf
-        ./install.sh esp32
-    
-    - name: Install Python requirements
-  env:
-    IDF_PATH: ${{ github.workspace }}/esp-idf
-  run: |
-    python -m pip install --upgrade pip
-    python -m pip install -r esp-idf/requirements.txt
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      
+      - name: Clone ESP-IDF v4.1
+        run: |
+          git clone -b v4.1 --recursive https://github.com/espressif/esp-idf.git
+          cd esp-idf
+          git checkout 5ef1b390026270503634ac3ec9f1ec2e364e23b2
+          git submodule update --init --recursive
+      
+      - name: Install ESP-IDF
+        run: |
+          cd esp-idf
+          ./install.sh esp32
+      
+      - name: Install Python requirements
+        env:
+          IDF_PATH: ${{ github.workspace }}/esp-idf
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r $IDF_PATH/requirements.txt
 
-- name: Build project
-  env:
-    IDF_PATH: ${{ github.workspace }}/esp-idf
-  run: |
-    . $IDF_PATH/export.sh
-    idf.py build
-    - name: Build project
-      run: |
-        export IDF_PATH=$PWD/esp-idf
-        . $IDF_PATH/export.sh
-        idf.py build
-    
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-artifact
-        path: ./build/output
+      - name: Build project
+        env:
+          IDF_PATH: ${{ github.workspace }}/esp-idf
+        run: |
+          . $IDF_PATH/export.sh
+          idf.py build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: ./build/
+          
