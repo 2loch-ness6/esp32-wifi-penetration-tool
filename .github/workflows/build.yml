@@ -35,10 +35,18 @@ jobs:
         ./install.sh esp32
     
     - name: Install Python requirements
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install -r esp-idf/requirements.txt
-    
+  env:
+    IDF_PATH: ${{ github.workspace }}/esp-idf
+  run: |
+    python -m pip install --upgrade pip
+    python -m pip install -r esp-idf/requirements.txt
+
+- name: Build project
+  env:
+    IDF_PATH: ${{ github.workspace }}/esp-idf
+  run: |
+    . $IDF_PATH/export.sh
+    idf.py build
     - name: Build project
       run: |
         export IDF_PATH=$PWD/esp-idf
